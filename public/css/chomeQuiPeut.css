@@ -1,0 +1,18 @@
+.enteteCQP {
+    color: rgb(9, 255, 0);
+    background-color: black;
+    }
+    .piedCQP {
+    color: rgb(9, 255, 0);
+    background-color: black;
+    }
+    .sectionGauche
+    {
+    color: rgb(226, 197, 33);
+    background-color: rgb(73, 12, 12);
+    }
+    .sectionDroite
+    {
+    color: rgb(15, 14, 5);
+    background-color: darkgray;
+    }
