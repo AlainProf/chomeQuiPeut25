@@ -5,23 +5,30 @@
 
 {% block body %}
 <div class="row">
+   <h3>{{ message }}</h3>
 	<section class="col-3 sectionGauche">
 		<h4>Travailleurs inscrits</h4>
 		<ul>
-			<li>Albert</li>
-			<li>Béatrice</li>
-			<li>Clotaire</li>
-			<li>Diane</li>
+		{% for chomeur in chomeurs %}
+		<li>
+		  {{ chomeur.nom }}, ({{chomeur.adresse.ville}})
+		</li>
+		{% endfor %}
 		</ul>
 	</section>
 	<section class="col-9 sectionDroite">
 		<h4>Emplois disponibles</h4>
 		<ul>
-			<li>Alpiniste</li>
-			<li>Boucher</li>
-			<li>Chirurgien</li>
-			<li>Douanier</li>
+		{% for offre in tabOE %}
+		<li>
+		  {{ offre.titre }}
+		</li>
+		{% endfor %}
 		</ul>
 	</section>
+</div>
+<div class='row'>
+   <a class='col-3 btn btn-info'
+      href='creerChomeurHC'>Ajouter un chomeur HC</a>
 </div>
 {% endblock %}
