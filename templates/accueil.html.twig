@@ -3,6 +3,12 @@
 	<link rel="stylesheet" href="/css/chomeQuiPeut.css">
 {% endblock %}
 
+{% block javascripts %}
+   <script src="js/modaleChomeur.js"></script>
+{% endblock %}
+
+
+
 {% block body %}
 <div class="row">
    <h3>{{ message }}</h3>
@@ -11,7 +17,9 @@
 		<ul>
 		{% for chomeur in chomeurs %}
 		<li>
-		  {{ chomeur.nom }}, ({{chomeur.adresse.ville}})
+		  <a class='boutonModale' href='chomeurDetail/{{chomeur.id}}'>
+		     {{ chomeur.nom }}, ({{chomeur.adresse.ville}})
+		  </a>
 		</li>
 		{% endfor %}
 		</ul>
@@ -21,7 +29,7 @@
 		<ul>
 		{% for offre in tabOE %}
 		<li>
-		  {{ offre.titre }}
+		  {{ offre.titre }}, ({{offre.entreprise.nom}})
 		</li>
 		{% endfor %}
 		</ul>
@@ -30,5 +38,11 @@
 <div class='row'>
    <a class='col-3 btn btn-info'
       href='creerChomeurHC'>Ajouter un chomeur HC</a>
+   <a class='col-3 btn btn-info'
+      href='creerOffreEmploiHC'>Ajouter offre emploi HC</a>
+   <a class='col-3 btn btn-danger'
+      href='entrepriseEtSesOffres'>Afficher Entreprises</a>
+</div>
+<div id='modaleChomeur' title="Détails d'un chômeur">
 </div>
 {% endblock %}

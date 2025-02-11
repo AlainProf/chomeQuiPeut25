@@ -6,6 +6,7 @@ use App\Repository\AdresseRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AdresseRepository::class)]
+#[ORM\Table(name:"adresses")]
 class Adresse
 {
     #[ORM\Id]
@@ -13,7 +14,7 @@ class Adresse
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 10)]
+    #[ORM\Column(name:"numCivique", length: 10)]
     private ?string $numCivique = null;
 
     #[ORM\Column(length: 30)]

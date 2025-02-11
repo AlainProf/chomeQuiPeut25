@@ -10,6 +10,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\OffreEmploi;
 use App\Entity\Chomeur;
 use App\Entity\Adresse;
+use App\Entity\Entreprise;
 
 ini_set('date.timezone', 'america/new_york');
 
@@ -52,6 +53,43 @@ final class BaseController extends AbstractController
 
         $em = $doctrine->getManager();
         $em->persist($chomeur);
+        $em->flush();
+
+        return $this->RedirectToRoute('accueil');
+    }
+
+    #[Route('/creerOffreEmploiHC')]
+    public function creerOffreEmploiHC(ManagerRegistry $doctrine): Response
+    {
+        $entrep1 = new Entreprise;
+        $entrep1->setNom("St-Hubert BBQ");
+        $entrep1->setContact("Félix");
+
+        $oeA = new OffreEmploi;
+        $oeA->setTitre("Adjoint admin");
+        $oeA->setDescription("Apporter le café");
+        $oeA->setSalaireAnnuel("40000");
+        $oeA->setDatePublication(new \DateTime);
+
+        $oeB = new OffreEmploi;
+        $oeB->setTitre("Opérateur info");
+        $oeB->setDescription("Dire oui à Alain M.");
+        $oeB->setSalaireAnnuel("35000");
+        $oeB->setDatePublication(new \DateTime);
+
+        //$oeA->setEntreprise($entrep1);
+        //$oeB->setEntreprise($entrep1);
+         $entrep1->addOffreEmploi($oeA);
+         $entrep1->addOffreEmploi($oeB);
+
+        $em = $doctrine->getManager();
+        
+
+
+        $em->persist($entrep1);
+        //$em->persist($oeA);
+        //$em->persist($oeB);
+
         $em->flush();
 
         return $this->RedirectToRoute('accueil');

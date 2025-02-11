@@ -1,0 +1,6 @@
+{% for entrep in tabEntrep %}
+  <h3>{{entrep.nom}}</h3>
+  {% for oe in entrep.offreEmplois %}
+     {{oe.titre}} , {{oe.descRIPtion }}<br>
+  {% endfor %}
+{% endfor %}
