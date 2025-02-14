@@ -7,11 +7,8 @@
    <script src="js/modaleChomeur.js"></script>
 {% endblock %}
 
-
-
 {% block body %}
 <div class="row">
-   <h3>{{ message }}</h3>
 	<section class="col-3 sectionGauche">
 		<h4>Travailleurs inscrits</h4>
 		<ul>
@@ -29,7 +26,7 @@
 		<ul>
 		{% for offre in tabOE %}
 		<li>
-		  {{ offre.titre }}, ({{offre.entreprise.nom}})
+		  {{ offre.titre }}, ({{offre.entreprise.nom}}), publié le {{ offre.datePublication|date('d F H:i')}}
 		</li>
 		{% endfor %}
 		</ul>
@@ -37,11 +34,11 @@
 </div>
 <div class='row'>
    <a class='col-3 btn btn-info'
-      href='creerChomeurHC'>Ajouter un chomeur HC</a>
+      href='{{path("rte_creer_chomeurHC")}}'>Ajouter un chomeur HC</a>
    <a class='col-3 btn btn-info'
-      href='creerOffreEmploiHC'>Ajouter offre emploi HC</a>
+      href='{{path("rte_creer_offre_emploiHC")}}'>Ajouter offre emploi HC</a>
    <a class='col-3 btn btn-danger'
-      href='entrepriseEtSesOffres'>Afficher Entreprises</a>
+      href='{{path("rte_entrep_et_ses_offres")}}'>Afficher Entreprises</a>
 </div>
 <div id='modaleChomeur' title="Détails d'un chômeur">
 </div>

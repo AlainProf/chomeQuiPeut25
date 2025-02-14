@@ -28,13 +28,12 @@ final class BaseController extends AbstractController
                        
         return $this->render('accueil.html.twig', 
         [
-            'message' => "L'avenir vous appartient",
             'tabOE' => $offresEmplois,
             'chomeurs' =>$chomeurs
         ]);
     }
 
-    #[Route('/creerChomeurHC')]
+    #[Route('/creerChomeurHC', name:'rte_creer_chomeurHC')]
     public function creerChomeurHC(ManagerRegistry $doctrine): Response
     {
         $chomeur = new Chomeur; 
@@ -58,7 +57,7 @@ final class BaseController extends AbstractController
         return $this->RedirectToRoute('accueil');
     }
 
-    #[Route('/creerOffreEmploiHC')]
+    #[Route('/creerOffreEmploiHC', name:'rte_creer_offre_emploiHC')]
     public function creerOffreEmploiHC(ManagerRegistry $doctrine): Response
     {
         $entrep1 = new Entreprise;

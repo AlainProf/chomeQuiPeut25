@@ -14,7 +14,7 @@ use App\Entity\Entreprise;
 
 final class EntrepriseController extends AbstractController
 {
-    #[Route('/entrepriseEtSesOffres')]
+    #[Route('/entrepriseEtSesOffres', name:'rte_entrep_et_ses_offres')]
     public function entrepriseEtSesOffres(ManagerRegistry $doctrine): Response
     {
         $em = $doctrine->getManager();
