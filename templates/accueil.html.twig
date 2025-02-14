@@ -22,6 +22,17 @@
 		</ul>
 	</section>
 	<section class="col-9 sectionDroite">
+		
+		<h5>Filtré sur entreprise</h5>
+		<form action='{{path("rte_appliquer_filtre")}}'>
+		  <select name='filtreEntrep'>
+		    {% for entrep in tabEntrep %}
+    		    <option value='{{entrep.id}}'>{{entrep.NoM}}</option>
+			{% endfor %}
+		  </select>
+		  <input type='submit' name='soumettre'>
+		</form>
+		
 		<h4>Emplois disponibles</h4>
 		<ul>
 		{% for offre in tabOE %}

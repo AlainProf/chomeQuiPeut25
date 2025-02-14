@@ -25,4 +25,20 @@ final class EntrepriseController extends AbstractController
             => $tabEntrep
         ]);
     }
+
+
+    
+    #[Route('/appliquerFiltre', name:'rte_appliquer_filtre')]
+    public function appliquerFiltre(ManagerRegistry $doctrine): Response
+    {
+
+        $em = $doctrine->getManager();
+        $tabEntrep = $em->getRepository(Entreprise::class)->findAll();
+     
+
+        return new Response("<h1>Filtrer ourentrep :"  . $_GET['filtreEntrep'] . "</h1>");
+
+        
+    }
+
 }

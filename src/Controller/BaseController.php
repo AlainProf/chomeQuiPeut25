@@ -25,11 +25,13 @@ final class BaseController extends AbstractController
                                   ->findAll();
 
         $chomeurs = $doctrine->getManager()->getRepository(Chomeur::class)->findAll();                                  
+        $entreprises = $doctrine->getManager()->getRepository(Entreprise::class)->findAll();                                  
                        
         return $this->render('accueil.html.twig', 
         [
             'tabOE' => $offresEmplois,
-            'chomeurs' =>$chomeurs
+            'chomeurs' =>$chomeurs,
+            'tabEntrep' => $entreprises
         ]);
     }
 
