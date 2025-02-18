@@ -8,8 +8,16 @@
 {% endblock %}
 
 {% block body %}
+
+{{ include('commun/zoneFlash.html.twig')}}
+
 <div class="row">
+	<!-- ---------------------------------------- -->
+    <!-- Section des travailleurs -->
+	<!-- ---------------------------------------- -->
 	<section class="col-3 sectionGauche">
+  		<a class='btn btn-danger' href="{{ path('chomeur_inscription') }}" >S'inscrire</a>
+
 		<h4>Travailleurs inscrits</h4>
 		<ul>
 		{% for chomeur in chomeurs %}
@@ -20,27 +28,48 @@
 		</li>
 		{% endfor %}
 		</ul>
-	</section>
-	<section class="col-9 sectionDroite">
-		
-		<h5>Filtré sur entreprise</h5>
-		<form action='{{path("rte_appliquer_filtre")}}'>
-		  <select name='filtreEntrep'>
-		    {% for entrep in tabEntrep %}
-    		    <option value='{{entrep.id}}'>{{entrep.NoM}}</option>
-			{% endfor %}
-		  </select>
-		  <input type='submit' name='soumettre'>
+
+		<form action='{{path("rte_recherche_textuelle")}}' method='post'>
+		  Filtrer sur nom des travailleurs:<input type='text' name='filtreTexte'><br>
+		  <input class="btn btn-warning" type='submit' name='recherche' value='rechercher'>
 		</form>
-		
-		<h4>Emplois disponibles</h4>
+		<a class='btn btn-danger' href="{{ path('accueil') }}" >Afficher</a>
+
+
+	</section>
+
+	<!-- ---------------------------------------- -->
+    <!-- Section des entreprises -->
+	<!-- ---------------------------------------- -->
+
+
+	<section class="col-9 sectionDroite">
+	    <a class='btn btn-danger' href="{{ path('entrep_inscription') }}" >S'inscrire</a>
 		<ul>
+        {% if entrepFiltree is defined %} 
+		   <h4>Emplois disponibles chez {{ entrepFiltree.nom }}</h4>
+		{% else %}
+    		<h4>Emplois disponibles</h4>
+		{% endif %}
+       
 		{% for offre in tabOE %}
 		<li>
 		  {{ offre.titre }}, ({{offre.entreprise.nom}}), publié le {{ offre.datePublication|date('d F H:i')}}
 		</li>
 		{% endfor %}
 		</ul>
+
+    	<h5>Filtrer sur entreprise</h5>
+		<form action='{{path("rte_appliquer_filtre")}}' method='post'>
+		  <select name='filtreEntrep'>
+		    {% for entrep in tabEntrep %}
+    		    <option value='{{entrep.id}}'>{{entrep.NoM}}</option>
+			{% endfor %}
+			    <option value='1000'>Toutes</option>
+		  </select>
+		  <input class="btn btn-warning" type='submit' name='soumettre' value='filtrer'>
+		</form>
+
 	</section>
 </div>
 <div class='row'>

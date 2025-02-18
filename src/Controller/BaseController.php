@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\{Response, Request};
 use Symfony\Component\Routing\Attribute\Route;
 
 use Doctrine\Persistence\ManagerRegistry;
@@ -26,12 +26,49 @@ final class BaseController extends AbstractController
 
         $chomeurs = $doctrine->getManager()->getRepository(Chomeur::class)->findAll();                                  
         $entreprises = $doctrine->getManager()->getRepository(Entreprise::class)->findAll();                                  
-                       
+              
+         
+        if (count($offresEmplois) == 0)
+        {
+            $this->addFlash('notice', 'Aucune offres d\'emploi présentement affichée sur le site');
+        }
+
         return $this->render('accueil.html.twig', 
         [
             'tabOE' => $offresEmplois,
             'chomeurs' =>$chomeurs,
             'tabEntrep' => $entreprises
+        ]);
+    }
+
+    #[Route('/accueilFiltre/{idEntrep}', name: 'accueil_filtre')]
+    public function accueilFiltre(ManagerRegistry $doctrine, Request $req, $idEntrep): Response
+    {
+        //$valFiltre = $req->request->get('filtreEntrep');
+        if ($idEntrep == '1000')
+           return $this->redirectToRoute('accueil');
+
+        $em = $doctrine->getManager();
+        $chomeurs = $doctrine->getManager()->getRepository(Chomeur::class)->findAll();                                  
+        $entrepFiltree = $em->getRepository(Entreprise::class)->find($idEntrep); 
+
+        $entreprises = $em->getRepository(Entreprise::class)->findAll();
+
+        $tabOE = $entrepFiltree->getOffreEmplois();
+        if (count($tabOE) == 0)
+        {
+            $this->addFlash('notice', 'Aucune offres d\'emploi affichée par ' . $entrepFiltree->getNom());
+        }
+        else
+        {
+            $this->addFlash('success', ' ' . count($tabOE) . ' offres d\'emplois affichées par ' . $entrepFiltree->getNom());
+        }
+        return $this->render('accueil.html.twig', 
+        [
+            'tabOE' => $tabOE,
+            'chomeurs' =>$chomeurs,
+            'tabEntrep' => $entreprises,
+            'entrepFiltree' => $entrepFiltree
         ]);
     }
 

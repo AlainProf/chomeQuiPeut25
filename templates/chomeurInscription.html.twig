@@ -1,0 +1,16 @@
+{%extends 'base.html.twig' %}
+{% block stylesheets %}
+	<link rel="stylesheet" href="/css/chomeQuiPeut.css">
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}
+
+{% block body %}
+{{ include('commun/zoneFlash.html.twig')}}
+
+<h1>Fournissez vos information:</h1>
+
+<a class='btn btn-danger' href="{{ path('accueil') }}" >Retour</a>
+
+{% endblock %}
