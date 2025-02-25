@@ -6,6 +6,8 @@ use App\Repository\ChomeurRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: ChomeurRepository::class)]
 class Chomeur
 {
@@ -21,6 +23,7 @@ class Chomeur
     private ?string $courriel = null;
 
     #[ORM\Column(length: 10)]
+    #[Assert\RegExp("/^[a-z]|[A-Z]{4}[0-9]{10}$/", Message:'mauvais formatage')]
     private ?string $telephone = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

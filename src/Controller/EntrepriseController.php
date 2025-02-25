@@ -17,6 +17,9 @@ use App\Entity\Chomeur;
 use App\Entity\Adresse;
 use App\Entity\Entreprise;
 
+use App\Form\EntrepriseType;
+use App\Form\OffreEmploiType;
+
 final class EntrepriseController extends AbstractController
 {
     #[Route('/entrepriseEtSesOffres', name:'rte_entrep_et_ses_offres')]
@@ -34,23 +37,18 @@ final class EntrepriseController extends AbstractController
     #[Route('/entrepInscription', name:'entrep_inscription')]
     public function entrepInscription(ManagerRegistry $doctrine, Request $req ): Response
     {
+  
         $entrepCandidat = new Entreprise;
 
-        $formBuilder = $this->createFormBuilder($entrepCandidat)
-        ->add('nom', TextType::class)
-        ->add('contact', TextType::class)
-        ->add('Soumettre', SubmitType::class);
-
-        $formulaire = $formBuilder->getForm();
-
-
+        $formExterne = $this->createForm(EntrepriseType::class, $entrepCandidat );
+      
         // 1- Si le form vient d'être soumis handleRequest($req) remplira l'objet $entreCandidat
-        $formulaire->handleRequest($req);
-        if ($formulaire->isSubmitted()   )
+        $formExterne->handleRequest($req);
+        if ($formExterne->isSubmitted()   )
         {
             //2- Nous somme bien en mode soumission
             // on valide les info du post
-            if ($formulaire->isValid())
+            if ($formExterne->isValid())
             {
                 //3- Le fom soumis est valide on sauvegarde $entreCandidat en BD
                 $em  = $doctrine->getManager();
@@ -64,7 +62,7 @@ final class EntrepriseController extends AbstractController
                 $this->addFlash('erreur', 'Info invalide');
             }
         }
-        return $this->render('entrepInscription.html.twig', ['formulaire' => $formulaire] );
+        return $this->render('entrepInscription.html.twig', ['formulaire' => $formExterne] );
     }
 
 
@@ -89,6 +87,38 @@ final class EntrepriseController extends AbstractController
         //return new Response("<h1>Filtrer ourentrep :"  . $_POST['filtreEntrep'] . "</h1>");
 
         
+    }
+
+    
+    #[Route('/creerOffreEmploi', name:'rte_creer_offre_emploi')]
+    public function creerOffreEmploi(ManagerRegistry $doctrine, Request $req): Response
+    {
+        $oeCandidat = new OffreEmploi;
+        $oeCandidat->setdatePublication(new \DateTime);
+
+        $formOE = $this->createForm(OffreEmploiType::class, $oeCandidat);
+   
+        $formOE->handleRequest($req);
+        if ($formOE->isSubmitted()   )
+        {
+            //2- Nous somme bien en mode soumission
+            // on valide les info du post
+            if ($formOE->isValid())
+            {
+                //3- Le fom soumis est valide on sauvegarde $entreCandidat en BD
+                $em  = $doctrine->getManager();
+                $em->persist($oeCandidat);
+                $em->flush();
+
+                return $this->redirectToRoute('accueil');
+            }
+            else
+            {
+                $this->addFlash('erreur', 'Info invalide');
+            }
+        }
+        return $this->render('creerOffreEmploi.html.twig', ['formulaire' => $formOE] );
+     
     }
 
 }

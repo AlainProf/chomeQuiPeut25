@@ -1,0 +1,42 @@
+{%extends 'base.html.twig' %}
+{% block stylesheets %}
+	<link rel="stylesheet" href="/css/chomeQuiPeut.css">
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}
+
+{% block body %}
+{{ include('commun/zoneFlash.html.twig')}}
+
+<h1>Information sur l'offre d'emploi:</h1>
+
+{# form(formulaire) #}
+
+{{ form_start(formulaire)}}
+
+<div>
+   {{ form_label(formulaire.titre, 'Titre:')}}
+   {{ form_widget(formulaire.titre)}}
+   {{ form_errors(formulaire.titre)}}
+</div>
+
+<div>
+   {{ form_label(formulaire.description, 'Compétences recherchées:')}}
+   {{ form_widget(formulaire.description)}}
+   {{ form_errors(formulaire.description)}}
+</div>
+
+<div>
+   {{ form_label(formulaire.salaireAnnuel, 'Salaire annuel:')}}
+   {{ form_widget(formulaire.salaireAnnuel)}}
+   <section class='erreur'>
+   {{ form_errors(formulaire.salaireAnnuel)}}
+   </section>
+</div>
+
+{{ form_end(formulaire) }}
+
+<a class='btn btn-danger' href="{{ path('accueil') }}" >Retour</a>
+
+{% endblock %}

@@ -6,6 +6,8 @@ use App\Repository\OffreEmploiRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: OffreEmploiRepository::class)]
 class OffreEmploi
 {
@@ -14,13 +16,16 @@ class OffreEmploi
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 10)]
+    #[Assert\Length(min:2, minMessage:'deux caractères minimum')]
     private ?string $titre = null;
 
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\LessThan(300000, message:'maximum 300000')]
+    #[Assert\GreaterThan(1000, message:'minimum de 1000')]
     private ?int $salaireAnnuel = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

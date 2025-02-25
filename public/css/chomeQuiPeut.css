@@ -16,3 +16,8 @@
     color: rgb(15, 14, 5);
     background-color: darkgray;
     }
+    .erreur{
+        color:red;
+        background-color: yellow;
+        font-size:20px;
+    }

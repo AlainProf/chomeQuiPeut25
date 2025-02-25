@@ -12,6 +12,8 @@ use App\Entity\Chomeur;
 use App\Entity\Adresse;
 use App\Entity\Entreprise;
 
+use App\Form\ChomeurType;
+
 final class ChomeurController extends AbstractController
 {
     #[Route('/chomeurDetail/{idChomeur}')]
@@ -34,16 +36,30 @@ final class ChomeurController extends AbstractController
     public function chomeurInscription(ManagerRegistry $doctrine, Request $req ): Response
     {
         $chomeurCandidat = new Chomeur;
+        $chomeurCandidat->setDateInscription(new \DateTime);
 
-        $formBuilder = $this->createFormBuilder($chomeurCandidat)
-        ->add('nom', TextType::class)
-        ->add('courriel', TextType::class)
-        ->add('tel', TextType::class)
-        ->add('naissance', DateType::class);
-        
-        
-        
-        return $this->render('chomeurInscription.html.twig');
+        $formChomeur = $this->createForm(ChomeurType::class, $chomeurCandidat);
+   
+        $formChomeur->handleRequest($req);
+        if ($formChomeur->isSubmitted()   )
+        {
+            //2- Nous somme bien en mode soumission
+            // on valide les info du post
+            if ($formChomeur->isValid())
+            {
+                //3- Le fom soumis est valide on sauvegarde $entreCandidat en BD
+                $em  = $doctrine->getManager();
+                $em->persist($chomeurCandidat);
+                $em->flush();
+
+                return $this->redirectToRoute('accueil');
+            }
+            else
+            {
+                $this->addFlash('erreur', 'Info invalide');
+            }
+        }
+        return $this->render('chomeurInscription.html.twig', ['formulaire' => $formChomeur] );
     }
        
 
