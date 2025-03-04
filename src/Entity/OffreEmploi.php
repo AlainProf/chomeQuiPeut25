@@ -26,6 +26,7 @@ class OffreEmploi
     #[ORM\Column(nullable: true)]
     #[Assert\LessThan(300000, message:'maximum 300000')]
     #[Assert\GreaterThan(1000, message:'minimum de 1000')]
+    #[Assert\RegExp("/^.[1-9]000$/i", match:true, message:'mauvais format')]    
     private ?int $salaireAnnuel = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

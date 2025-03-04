@@ -17,6 +17,7 @@ class Chomeur
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\Length(min:2, minMessage:'deux caractères minimum')]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]

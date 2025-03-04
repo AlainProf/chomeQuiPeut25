@@ -1,0 +1,40 @@
+{%extends 'base.html.twig' %}
+{% block stylesheets %}
+	<link rel="stylesheet" href="/css/chomeQuiPeut.css">
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}
+
+{% block body %}
+
+{{ include('commun/zoneFlash.html.twig')}}
+
+<div class="row">
+	<!-- ---------------------------------------- -->
+    <!-- Section des offres emplois -->
+	<!-- ---------------------------------------- -->
+<section class="col-1 ">
+      <a class='btn btn-info'
+      href='{{path("voirSession")}}'>Voir session</a>
+   <a class='btn btn-info'
+      href='{{path("viderSession")}}'>Vider session</a>
+
+</section>
+<section class="col-11">
+  	<ul>
+        {% if entrepFiltree is defined %} 
+		   <h4>Emplois disponibles chez {{ entrepFiltree.nom }}</h4>
+		{% else %}
+    		<h4>Emplois disponibles</h4>
+		{% endif %}
+       
+		{% for offre in tabOE %}
+		<li>
+		  {{ offre.titre }}, ({{offre.entreprise.nom}}), publié le {{ offre.datePublication|date('d F H:i')}}
+		</li>
+		{% endfor %}
+		</ul>
+	</section>
+</div>
+{% endblock %}

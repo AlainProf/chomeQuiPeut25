@@ -17,7 +17,63 @@ ini_set('date.timezone', 'america/new_york');
 
 final class BaseController extends AbstractController
 {
-    #[Route('/', name: 'accueil')]
+    #[Route('/', name: 'racine')]
+    public function racine(ManagerRegistry $doctrine): Response
+    {
+        $offresEmplois = $doctrine->getManager()
+                                  ->getRepository(OffreEmploi::class)
+                                  ->findAll();
+
+        $chomeurs = $doctrine->getManager()->getRepository(Chomeur::class)->findAll();                                  
+        $entreprises = $doctrine->getManager()->getRepository(Entreprise::class)->findAll();                                  
+              
+        return $this->render('racine.html.twig', 
+        [
+            'tabOE' => $offresEmplois,
+            'chomeurs' =>$chomeurs,
+            'tabEntrep' => $entreprises
+        ]);
+    }
+
+    
+
+    #[Route('/accueilChomeur', name: 'accueilChomeur')]
+    public function accueilChomeur(ManagerRegistry $doctrine, Request $req): Response
+    {
+        $idChomeur = $req->query->get('chomeurConnecte');
+
+        $chomeurConnecte =  $doctrine->getManager()
+        ->getRepository(Chomeur::class)
+        ->find($idChomeur);
+        
+        if ($chomeurConnecte)
+        {
+            $this->addFlash('succes', 'Bienvenue ' . $chomeurConnecte->getNom());
+            $req->getSession()->set('chomeurConnecte', $chomeurConnecte);
+        }
+
+        $offresEmplois = $doctrine->getManager()
+                                  ->getRepository(OffreEmploi::class)
+                                  ->findAll();
+        $entreprises = $doctrine->getManager()->getRepository(Entreprise::class)->findAll();                                  
+
+
+        if (count($offresEmplois) == 0)
+        {
+            $this->addFlash('notice', 'Aucune offres d\'emploi présentement affichée sur le site');
+        }
+
+        return $this->render('accueilChomeur.html.twig', 
+        [
+            'tabOE' => $offresEmplois,
+            'tabEntrep' => $entreprises
+        ]);
+    }
+
+
+
+
+    #[Route('/accueil', name: 'accueil')]
     public function accueil(ManagerRegistry $doctrine): Response
     {
         $offresEmplois = $doctrine->getManager()
@@ -132,6 +188,21 @@ final class BaseController extends AbstractController
 
         return $this->RedirectToRoute('accueil');
     }
+
+    #[Route('/voirSession', name:'voirSession')]
+    public function voirSession(Request $req): Response
+    {
+        dd($req->getSession()->get('chomeurConnecte'));
+    }
+
+    #[Route('/viderSession', name:'viderSession')]
+    public function viderSession(Request $req): Response
+    {
+        $req->getSession()->clear();
+
+        return $this->redirectToRoute('racine');
+    }
+
 
 
 }

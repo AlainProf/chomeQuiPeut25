@@ -1,0 +1,40 @@
+{%extends 'base.html.twig' %}
+{% block stylesheets %}
+	<link rel="stylesheet" href="/css/chomeQuiPeut.css">
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}
+
+{% block body %}
+
+{{ include('commun/zoneFlash.html.twig')}}
+
+<div class="row">
+ <section class='col-1'>
+    <a class='btn btn-info'
+      href='{{path("voirSession")}}'>Voir session</a>
+   <a class='btn btn-info'
+      href='{{path("viderSession")}}'>Vider session</a>
+
+ </section>
+
+ <section class='col-11'>
+  <h1>Bienvenue sur Chome Qui Peut!</h1>
+
+  <p>{{ chomeurs|length }} chômeurs inscrits</P>
+  <p>{{ tabOE|length }} offres d'emplois publiées par {{ tabEntrep|length }} entreprise </P>
+
+  <h4>Qui êtes vous?</h4>
+
+  <form action='{{path("accueilChomeur")}}'>
+    <select name='chomeurConnecte'>
+    {% for c in chomeurs %}
+       <option value={{c.id}}>{{c.nom}}</option>
+    {% endfor %}
+    <input class="btn btn-success" type='submit' name='connexion'>
+  </form>
+  </section>
+
+</div>
+{% endblock %}
