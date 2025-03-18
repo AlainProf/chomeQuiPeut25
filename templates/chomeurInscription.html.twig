@@ -9,10 +9,31 @@
 {% block body %}
 {{ include('commun/zoneFlash.html.twig')}}
 
-<h1>Fournissez vos information:</h1>
+<h1>Fournissez vos informations:</h1>
 
-{{ form(formulaire) }}
+{{ form_start(formulaire)}}
+<div>
+   {{ form_label(formulaire.nom, 'Nom:')}}
+   {{ form_widget(formulaire.nom)}}
+   {{ form_errors(formulaire.nom)}}
+</div>
 
-<a class='btn btn-danger' href="{{ path('accueil') }}" >Retour</a>
+<div>
+   {{ form_label(formulaire.courriel, 'Adresse courriel:')}}
+   {{ form_widget(formulaire.courriel)}}
+   {{ form_errors(formulaire.courriel)}}
+</div>
+
+<div>
+   {{ form_label(formulaire.telephone, 'Téléphone:')}}
+   {{ form_widget(formulaire.telephone)}}
+   <section class='erreur'>
+   {{ form_errors(formulaire.telephone)}}
+   </section>
+</div>
+
+{{ form_end(formulaire) }}
+
+<a class='btn btn-danger' href="{{ path('racine') }}" >Retour</a>
 
 {% endblock %}

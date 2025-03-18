@@ -11,30 +11,47 @@
 {{ include('commun/zoneFlash.html.twig')}}
 
 <div class="row">
- <section class='col-1'>
+  <section class='col-11'>
+   <h1>Bienvenue sur Chome Qui Peut!</h1>
+
+   <h5>{{ chomeurs|length }} chômeurs inscrits, {{ tabOE|length }} offres d'emplois publiées par {{ entreprises|length }} entreprises </h5>
+
+   <article class="row"> 
+     <div class="col-6">
+        <h4>Connexion chômeurs</h4>
+         <form action='{{path("accueilChomeur")}}'>
+          <select name='chomeurConnecte'>
+           {% for c in chomeurs %}
+           <option value={{c.id}}>{{c.nom}}</option>
+           {% endfor %}
+          </select>
+           <input class="btn btn-success" type='submit' value='se connecter'>
+          </form>
+           <a href="{{ path('chomeur_inscription') }}"  class="btn btn-warning">S'inscrire</a>
+       </div>
+
+     <div class="col-6">
+        <h4>Connexion Entreprises</h4>
+         <form action='{{path("accueilEntreprise")}}'>
+          <select name='entrepriseConnectee'>
+           {% for e in entreprises %}
+             <option value={{e.id}}>{{e.nom}}</option>
+           {% endfor %}
+          </select>
+           <input class="btn btn-success" type='submit'  value='se connecter'>
+          </form>
+          <a href="{{ path('entrep_inscription') }}"  class="btn btn-warning">S'inscrire</a>
+
+      </div>
+    </article>
+   </section> 
+   
+   <section class='col-1'>
     <a class='btn btn-info'
       href='{{path("voirSession")}}'>Voir session</a>
-   <a class='btn btn-info'
+    <a class='btn btn-info'
       href='{{path("viderSession")}}'>Vider session</a>
-
- </section>
-
- <section class='col-11'>
-  <h1>Bienvenue sur Chome Qui Peut!</h1>
-
-  <p>{{ chomeurs|length }} chômeurs inscrits</P>
-  <p>{{ tabOE|length }} offres d'emplois publiées par {{ tabEntrep|length }} entreprise </P>
-
-  <h4>Qui êtes vous?</h4>
-
-  <form action='{{path("accueilChomeur")}}'>
-    <select name='chomeurConnecte'>
-    {% for c in chomeurs %}
-       <option value={{c.id}}>{{c.nom}}</option>
-    {% endfor %}
-    <input class="btn btn-success" type='submit' name='connexion'>
-  </form>
-  </section>
+    </section>
 
 </div>
 {% endblock %}

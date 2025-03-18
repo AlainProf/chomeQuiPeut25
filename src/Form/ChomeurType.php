@@ -21,10 +21,6 @@ class ChomeurType extends AbstractType
             ->add('nom')
             ->add('courriel')
             ->add('telephone')
-            ->add('naissance', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('adresse', AdresseType::class)
             ->add('soumettre', SubmitType::class)
         ;
     }

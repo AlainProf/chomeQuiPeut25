@@ -20,10 +20,6 @@ class OffreEmploiType extends AbstractType
             ->add('titre')
             ->add('description', TextareaType::class)
             ->add('salaireAnnuel', MoneyType::class, ['required' => false, 'currency' =>'CAD'])
-            ->add('entreprise', EntityType::class, [
-                'class' => Entreprise::class,
-                'choice_label' => 'nom',
-            ])
             ->add('Publier', SubmitType::class)
         ;
     }

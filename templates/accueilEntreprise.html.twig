@@ -11,33 +11,24 @@
 {{ include('commun/zoneFlash.html.twig')}}
 
 <div class="row">
-	<!-- ---------------------------------------- -->
-    <!-- Section des offres emplois -->
-	<!-- ---------------------------------------- -->
+	
 <section class="col-11">
   	<ul>
-        {% if entrepFiltree is defined %} 
-		   <h4>Emplois disponibles chez {{ entrepFiltree.nom }}</h4>
-		{% else %}
-    		<h4>Emplois disponibles</h4>
-		{% endif %}
-       
-		{% for offre in tabOE %}
-		<li>
-		  {{ offre.titre }}, ({{offre.entreprise.nom}}), publié le {{ offre.datePublication|date('d F H:i')}}
-		</li>
-		{% endfor %}
-		</ul>
-	</section>
+       {% for oe in entrepriseConnectee.offreEmplois %}
+       <li>{{oe.Titre}} , {{oe.salaireAnnuel}}$CAN
+       {% endfor %}
+    </ul>
+    <a href="{{ path('rte_creer_offre_emploi') }}" class='btn btn-info'>Ajouter une offre d'emploi</a>
+</section>
 
-	<section class="col-1 ">
+ <section class="col-1 ">
       <a class='btn btn-info'
       href='{{path("voirSession")}}'>Voir session</a>
    <a class='btn btn-info'
       href='{{path("viderSession")}}'>Vider session</a>
-
 </section>
 </div>
+
 <div class="row">
    <a href="{{path('racine')}}" class='col-1 btn btn-danger'>Retour</a>
 </div>

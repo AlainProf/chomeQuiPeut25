@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\{Response, Request};
+use Symfony\Component\HttpFoundation\{Response, Request, Session\SessionInterface};
 use Symfony\Component\Routing\Attribute\Route;
 
 use Doctrine\Persistence\ManagerRegistry;
@@ -12,14 +12,16 @@ use App\Entity\Chomeur;
 use App\Entity\Adresse;
 use App\Entity\Entreprise;
 
-ini_set('date.timezone', 'america/new_york');
+//ini_set('date.timezone', 'america/new_york');
 
 
 final class BaseController extends AbstractController
 {
     #[Route('/', name: 'racine')]
-    public function racine(ManagerRegistry $doctrine): Response
+    public function racine(ManagerRegistry $doctrine, SessionInterface $sess): Response
     {
+        $sess->clear();
+        
         $offresEmplois = $doctrine->getManager()
                                   ->getRepository(OffreEmploi::class)
                                   ->findAll();
@@ -31,26 +33,38 @@ final class BaseController extends AbstractController
         [
             'tabOE' => $offresEmplois,
             'chomeurs' =>$chomeurs,
-            'tabEntrep' => $entreprises
+            'entreprises' => $entreprises
         ]);
     }
 
     
 
     #[Route('/accueilChomeur', name: 'accueilChomeur')]
-    public function accueilChomeur(ManagerRegistry $doctrine, Request $req): Response
+    public function accueilChomeur(ManagerRegistry $doctrine, Request $req, SessionInterface $sess): Response
     {
         $idChomeur = $req->query->get('chomeurConnecte');
 
-        $chomeurConnecte =  $doctrine->getManager()
-        ->getRepository(Chomeur::class)
-        ->find($idChomeur);
+        if (empty($idChomeur))
+        {
+            $chomeurConnecte = $sess->get('chomeurConnecte');
+        }
+        else
+        {
+            $chomeurConnecte =  $doctrine->getManager()
+                 ->getRepository(Chomeur::class)
+                 ->find($idChomeur);
+        }
+
         
+
+
         if ($chomeurConnecte)
         {
             $this->addFlash('succes', 'Bienvenue ' . $chomeurConnecte->getNom());
             $req->getSession()->set('chomeurConnecte', $chomeurConnecte);
         }
+        
+        
 
         $offresEmplois = $doctrine->getManager()
                                   ->getRepository(OffreEmploi::class)
@@ -69,6 +83,34 @@ final class BaseController extends AbstractController
             'tabEntrep' => $entreprises
         ]);
     }
+
+    #[Route('/accueilEntreprise', name: 'accueilEntreprise')]
+    public function accueilEntreprise(ManagerRegistry $doctrine, Request $req): Response
+    {
+       $idEntreprise = $req->query->get('entrepriseConnectee');
+       if (empty($idEntreprise))
+       {
+           $entrepriseConnectee = $req->getSession()->get('entrepriseConnectee');
+       }
+       else
+       {
+           $entrepriseConnectee =  $doctrine->getManager()
+                ->getRepository(Entreprise::class)
+                ->find($idEntreprise);
+       }
+        
+        if ($entrepriseConnectee)
+        {
+            $this->addFlash('succes', 'Bienvenue ' . $entrepriseConnectee->getNom());
+            $req->getSession()->set('entrepriseConnectee', $entrepriseConnectee);
+        }
+
+        return $this->render('accueilEntreprise.html.twig', 
+        [
+            "entrepriseConnectee" => $entrepriseConnectee
+        ]);
+    }
+
 
 
 
@@ -128,7 +170,7 @@ final class BaseController extends AbstractController
         ]);
     }
 
-    #[Route('/creerChomeurHC', name:'rte_creer_chomeurHC')]
+   /* #[Route('/creerChomeurHC', name:'rte_creer_chomeurHC')]
     public function creerChomeurHC(ManagerRegistry $doctrine): Response
     {
         $chomeur = new Chomeur; 
@@ -187,12 +229,20 @@ final class BaseController extends AbstractController
         $em->flush();
 
         return $this->RedirectToRoute('accueil');
-    }
+    }*/
 
     #[Route('/voirSession', name:'voirSession')]
     public function voirSession(Request $req): Response
     {
-        dd($req->getSession()->get('chomeurConnecte'));
+        $chomeur = $req->getSession()->get('chomeurConnecte');
+        $entreprise = $req->getSession()->get('entrepriseConnectee');
+
+        $info = "";
+        if ($chomeur)
+          $info = "Chomeur:" . $chomeur->getNom() . "(" . $chomeur->getId() . ")";
+        if ($entreprise)
+          $info .= "Entreprise:" . $entreprise->getNom() . "(" . $entreprise->getId() . ")";
+        dd($info);
     }
 
     #[Route('/viderSession', name:'viderSession')]

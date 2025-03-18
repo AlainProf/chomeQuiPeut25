@@ -3,8 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\{Response,Request, Session\SessionInterface};
 use Symfony\Component\Routing\Attribute\Route;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -28,16 +27,14 @@ final class EntrepriseController extends AbstractController
         $em = $doctrine->getManager();
         $tabEntrep = $em->getRepository(Entreprise::class)->findAll();
 
-
         return $this->render('entreprise.html.twig', [ 'tabEntrep'
             => $tabEntrep
         ]);
     }
 
     #[Route('/entrepInscription', name:'entrep_inscription')]
-    public function entrepInscription(ManagerRegistry $doctrine, Request $req ): Response
+    public function entrepInscription(ManagerRegistry $doctrine, Request $req ,     SessionInterface $sess): Response
     {
-  
         $entrepCandidat = new Entreprise;
 
         $formExterne = $this->createForm(EntrepriseType::class, $entrepCandidat );
@@ -54,8 +51,9 @@ final class EntrepriseController extends AbstractController
                 $em  = $doctrine->getManager();
                 $em->persist($entrepCandidat);
                 $em->flush();
+                $sess->set('entrepriseConnectee', $entrepCandidat);
 
-                return $this->redirectToRoute('accueil');
+                return $this->redirectToRoute('accueilEntreprise');
             }
             else
             {
@@ -85,8 +83,7 @@ final class EntrepriseController extends AbstractController
 
 
         //return new Response("<h1>Filtrer ourentrep :"  . $_POST['filtreEntrep'] . "</h1>");
-
-        
+       
     }
 
     
@@ -95,6 +92,9 @@ final class EntrepriseController extends AbstractController
     {
         $oeCandidat = new OffreEmploi;
         $oeCandidat->setdatePublication(new \DateTime);
+        $IdEntrep = $req->getSession()->get('entrepriseConnectee')->getId();
+
+        $entrep = $doctrine->getManager()->getRepository(Entreprise::class)->find($IdEntrep);
 
         $formOE = $this->createForm(OffreEmploiType::class, $oeCandidat);
    
@@ -106,18 +106,20 @@ final class EntrepriseController extends AbstractController
             if ($formOE->isValid())
             {
                 //3- Le fom soumis est valide on sauvegarde $entreCandidat en BD
+                $entrep->addOffreEmploi($oeCandidat);
+                
                 $em  = $doctrine->getManager();
                 $em->persist($oeCandidat);
                 $em->flush();
 
-                return $this->redirectToRoute('accueil');
+                return $this->redirectToRoute('accueilEntreprise');
             }
             else
             {
                 $this->addFlash('erreur', 'Info invalide');
             }
         }
-        return $this->render('creerOffreEmploi.html.twig', ['formulaire' => $formOE] );
+        return $this->render('creerOffreEmploi.html.twig', ['formulaire' => $formOE, 'nomEntrep' => $entrep->getNom()] );
      
     }
 

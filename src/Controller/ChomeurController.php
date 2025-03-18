@@ -37,6 +37,16 @@ final class ChomeurController extends AbstractController
     {
         $chomeurCandidat = new Chomeur;
         $chomeurCandidat->setDateInscription(new \DateTime);
+        $chomeurCandidat->setNaissance(new \DateTime);
+
+        $adresse = new Adresse;
+        $adresse->setNumCivique("1234");
+        $adresse->setRue("sans issue");
+        $adresse->setVille("pandemonium");
+        $adresse->setcodePostal("G1Q1Q9");
+        
+
+        $chomeurCandidat->setAdresse($adresse);
 
         $formChomeur = $this->createForm(ChomeurType::class, $chomeurCandidat);
    
@@ -52,7 +62,10 @@ final class ChomeurController extends AbstractController
                 $em->persist($chomeurCandidat);
                 $em->flush();
 
-                return $this->redirectToRoute('accueil');
+                $sess = $req->getSession();
+                $sess->set('chomeurConnecte', $chomeurCandidat );
+
+                return $this->redirectToRoute('accueilChomeur');
             }
             else
             {
