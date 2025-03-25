@@ -14,17 +14,31 @@
 	<!-- ---------------------------------------- -->
     <!-- Section des offres emplois -->
 	<!-- ---------------------------------------- -->
-<section class="col-11">
+  <section class="col-6">
   	<ul>
         {% if entrepFiltree is defined %} 
-		   <h4>Emplois disponibles chez {{ entrepFiltree.nom }}</h4>
+		   <h4>Emplois offert chez  {{ entrepFiltree.nom }}</h4>
 		{% else %}
-    		<h4>Emplois disponibles</h4>
+    		<h4>Emplois offerts </h4>
 		{% endif %}
        
 		{% for offre in tabOE %}
 		<li>
-		  {{ offre.titre }}, ({{offre.entreprise.nom}}), publié le {{ offre.datePublication|date('d F H:i')}}
+		  {{ offre.titre }}, ({{offre.entreprise.nom}}), publié le {{ offre.datePublication|date('d F H:i')}} &nbsp; 
+		  <a href="{{path('postuler', {'oeid':offre.id } ) }}" class="btn btn-success">Postuler</a>
+		</li>
+		{% endfor %}
+		</ul>
+	</section>
+
+  <section class="col-5">
+  	<ul>
+  		<h4>Emplois postulés</h4>
+       
+		{% for applic in chomeur.applications %}
+		<li>
+		  {{ applic.offreEmploi.titre }}, ({{applic.offreEmploi.entreprise.nom}}), postulée le {{ applic.datePostulee|date('Y:m:d H:i')}} &nbsp; 
+		  <a href="{{path('annuler', {'appid':applic.id } ) }}" class="btn btn-danger">Annuler</a>
 		</li>
 		{% endfor %}
 		</ul>

@@ -12,13 +12,12 @@
 
 <div class="row">
   <section class='col-11'>
-   <h1>Bienvenue sur Chome Qui Peut!</h1>
-
-   <h5>{{ chomeurs|length }} chômeurs inscrits, {{ tabOE|length }} offres d'emplois publiées par {{ entreprises|length }} entreprises </h5>
+   <h4 class="pub">{{ chomeurs|length }} chômeurs inscrits, {{ tabOE|length }} offres d'emplois publiées par {{ entreprises|length }} entreprises </h4>
 
    <article class="row"> 
      <div class="col-6">
         <h4>Connexion chômeurs</h4>
+        {% if chomeurs|length > 0 %}
          <form action='{{path("accueilChomeur")}}'>
           <select name='chomeurConnecte'>
            {% for c in chomeurs %}
@@ -27,11 +26,14 @@
           </select>
            <input class="btn btn-success" type='submit' value='se connecter'>
           </form>
+        {% endif %}
+
            <a href="{{ path('chomeur_inscription') }}"  class="btn btn-warning">S'inscrire</a>
        </div>
 
      <div class="col-6">
         <h4>Connexion Entreprises</h4>
+         {% if entreprises|length > 0 %}
          <form action='{{path("accueilEntreprise")}}'>
           <select name='entrepriseConnectee'>
            {% for e in entreprises %}
@@ -40,6 +42,7 @@
           </select>
            <input class="btn btn-success" type='submit'  value='se connecter'>
           </form>
+          {% endif %}
           <a href="{{ path('entrep_inscription') }}"  class="btn btn-warning">S'inscrire</a>
 
       </div>

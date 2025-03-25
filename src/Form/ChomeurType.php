@@ -9,7 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\{TextType,SubmitType};
 
 
 
@@ -17,11 +17,12 @@ class ChomeurType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $requis = true;
         $builder
-            ->add('nom')
-            ->add('courriel')
-            ->add('telephone')
-            ->add('soumettre', SubmitType::class)
+            ->add('nom', TextType::class, ['required' => $requis])
+            ->add('courriel', TextType::class, ['required' => $requis])
+            ->add('telephone', TextType::class, ['required' => $requis])
+            ->add('soumettre', SubmitType::class, ['label' =>'Envoyer', 'attr' =>['class' => 'btn btn-info']])
         ;
     }
 

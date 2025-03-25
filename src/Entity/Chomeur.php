@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ChomeurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -21,10 +23,11 @@ class Chomeur
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Length(min:8, minMessage:'huit caractères minimum')]
     private ?string $courriel = null;
 
     #[ORM\Column(length: 10)]
-    #[Assert\RegExp("/^[a-z]|[A-Z]{4}[0-9]{10}$/", Message:'mauvais formatage')]
+    #[Assert\Regex(pattern:"/^[0-9]{10}$/", match:true, message:'10 chiffres svp')]
     private ?string $telephone = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -36,6 +39,18 @@ class Chomeur
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Adresse $adresse = null;
+
+    /**
+     * @var Collection<int, Application>
+     */
+    #[ORM\OneToMany(targetEntity: Application::class, mappedBy: 'chomeur', cascade:['persist', 'remove'])]
+    private Collection $applications;
+
+
+    public function __construct()
+    {
+        $this->applications = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -110,6 +125,36 @@ class Chomeur
     public function setAdresse(Adresse $adresse): static
     {
         $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Application>
+     */
+    public function getApplications(): Collection
+    {
+        return $this->applications;
+    }
+
+    public function addApplication(Application $application): static
+    {
+        if (!$this->applications->contains($application)) {
+            $this->applications->add($application);
+            $application->setChomeur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApplication(Application $application): static
+    {
+        if ($this->applications->removeElement($application)) {
+            // set the owning side to null (unless already changed)
+            if ($application->getChomeur() === $this) {
+                $application->setChomeur(null);
+            }
+        }
 
         return $this;
     }

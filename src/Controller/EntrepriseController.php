@@ -21,6 +21,34 @@ use App\Form\OffreEmploiType;
 
 final class EntrepriseController extends AbstractController
 {
+    #[Route('/accueilEntreprise', name: 'accueilEntreprise')]
+    public function accueilEntreprise(ManagerRegistry $doctrine, Request $req): Response
+    {
+       $idEntreprise = $req->query->get('entrepriseConnectee');
+       if (empty($idEntreprise))
+       {
+           $idEntreprise = $req->getSession()->get('entrepriseConnectee')->getId();
+       }
+
+       $entrepriseConnectee =  $doctrine->getManager()
+                ->getRepository(Entreprise::class)
+                ->find($idEntreprise);
+        
+        if ($entrepriseConnectee)
+        {
+            $this->addFlash('succes', 'Bienvenue ' . $entrepriseConnectee->getNom());
+            $req->getSession()->set('entrepriseConnectee', $entrepriseConnectee);
+        }
+
+        return $this->render('accueilEntreprise.html.twig', 
+        [
+            "entrepriseConnectee" => $entrepriseConnectee
+        ]);
+    }
+
+
+   
+   
     #[Route('/entrepriseEtSesOffres', name:'rte_entrep_et_ses_offres')]
     public function entrepriseEtSesOffres(ManagerRegistry $doctrine): Response
     {

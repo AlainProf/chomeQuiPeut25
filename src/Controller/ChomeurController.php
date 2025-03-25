@@ -3,14 +3,14 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\{Response, Request};
+use Symfony\Component\HttpFoundation\{Response, Request, Session\SessionInterface};
 use Symfony\Component\Routing\Attribute\Route;
 
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\OffreEmploi;
 use App\Entity\Chomeur;
 use App\Entity\Adresse;
-use App\Entity\Entreprise;
+use App\Entity\{Entreprise, Application};
 
 use App\Form\ChomeurType;
 
@@ -27,8 +27,45 @@ final class ChomeurController extends AbstractController
         ]);
     }
 
+    #[Route('/accueilChomeur', name: 'accueilChomeur')]
+    public function accueilChomeur(ManagerRegistry $doctrine, Request $req, SessionInterface $sess): Response
+    {
+        $idChomeur = $req->query->get('chomeurConnecte');
 
+        if (empty($idChomeur))
+        {
+            $idChomeur = $sess->get('chomeurConnecte')->getId();
+        }
 
+        $chomeurConnecte =  $doctrine->getManager()
+                 ->getRepository(Chomeur::class)
+                 ->find($idChomeur);
+
+        if ($chomeurConnecte)
+        {
+            $this->addFlash('succes', 'Bienvenue ' . $chomeurConnecte->getNom());
+            $req->getSession()->set('chomeurConnecte', $chomeurConnecte);
+        }
+  
+        $offresEmplois = $doctrine->getManager()
+                                  ->getRepository(OffreEmploi::class)
+                                  ->findAll();
+        $entreprises = $doctrine->getManager()->getRepository(Entreprise::class)->findAll();                                  
+
+        $offresEmploisNA = $this->filtrerOEDejaAppliquees($offresEmplois, $chomeurConnecte);
+
+        if (count($offresEmplois) == 0)
+        {
+            $this->addFlash('notice', 'Aucune offres d\'emploi présentement affichée sur le site');
+        }
+
+        return $this->render('accueilChomeur.html.twig', 
+        [
+            'tabOE' => $offresEmploisNA,
+            'chomeur' => $chomeurConnecte,
+            'tabEntrep' => $entreprises
+        ]);
+    }
 
 
     
@@ -115,4 +152,66 @@ final class ChomeurController extends AbstractController
             'tabEntrep' => $entreprises
         ]);
     }
+
+
+    
+    #[Route('/postuler/{oeid}', name:'postuler')]
+    public function postuler(ManagerRegistry $doctrine, Request $req, $oeid ): Response
+    {
+        $idChomeur = $req->getSession()->get('chomeurConnecte')->getId();
+
+        $chomeurPostulant = $doctrine->getManager()->getRepository(Chomeur::class)->find($idChomeur);
+        $oePostulee = $doctrine->getManager()->getRepository(OffreEmploi::class)->find($oeid);
+
+        $applic = new Application;
+        $applic->setOffreEmploi($oePostulee);
+        $applic->setChomeur($chomeurPostulant);
+        $applic->setDatePostulee(new \DateTime);
+        $applic->setConvoque(false);
+
+        $chomeurPostulant->addApplication($applic);
+        $doctrine->getManager()->flush();
+
+        $this->addFlash('succes', 'Vous avez postulé correctement sur ' . $oePostulee->getTitre());
+        return $this->redirectToroute('accueilChomeur');
+    }
+
+    
+    #[Route('/annuler/{appid}', name:'annuler')]
+    public function annuler(ManagerRegistry $doctrine, Request $req, $appid ): Response
+    {
+        $idChomeur = $req->getSession()->get('chomeurConnecte')->getId();
+
+        $chomeurAnnulant = $doctrine->getManager()->getRepository(Chomeur::class)->find($idChomeur);
+        $appAnnulee = $doctrine->getManager()->getRepository(Application::class)->find($appid);
+
+        $chomeurAnnulant->removeApplication($appAnnulee);
+        $doctrine->getManager()->remove($appAnnulee);
+        $doctrine->getManager()->flush();
+
+        $this->addFlash('notice', 'Vous avez correctement annulé votre postulation sur ' . $appAnnulee->getOffreEmploi()->getTitre());
+        return $this->redirectToroute('accueilChomeur');
+    }
+
+    function filtrerOEDejaAppliquees($toutesOE,  $chomeur)
+    {
+       $tabOEFiltrees = [];
+       foreach($toutesOE as $uneOE)   
+       {
+           $appliquee = false;
+           foreach($chomeur->getApplications() as $uneApplic)
+           {
+               if ($uneOE->getId() === $uneApplic->getOffreEmploi()->getId())
+               {
+                  $appliquee = true;
+               }
+           }
+           if (!$appliquee)
+           {
+            $tabOEFiltrees[] = $uneOE;
+           }
+       }
+       return $tabOEFiltrees;
+    }
+
 }

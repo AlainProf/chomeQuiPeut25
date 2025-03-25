@@ -15,13 +15,17 @@
 <div>
    {{ form_label(formulaire.nom, 'Nom:')}}
    {{ form_widget(formulaire.nom)}}
+   <section class='erreur'>
    {{ form_errors(formulaire.nom)}}
+   </section>
 </div>
 
 <div>
    {{ form_label(formulaire.courriel, 'Adresse courriel:')}}
    {{ form_widget(formulaire.courriel)}}
+   <section class='erreur'>
    {{ form_errors(formulaire.courriel)}}
+   </section>
 </div>
 
 <div>

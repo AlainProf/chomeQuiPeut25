@@ -16,6 +16,14 @@
   	<ul>
        {% for oe in entrepriseConnectee.offreEmplois %}
        <li>{{oe.Titre}} , {{oe.salaireAnnuel}}$CAN
+       {% if oe.applications|length > 0 %}
+          {% for a in oe.applications %}
+             {{a.Chomeur.Nom }}
+          {% endfor %}
+          &nbsp; 
+       {% endif %}
+
+       </li>
        {% endfor %}
     </ul>
     <a href="{{ path('rte_creer_offre_emploi') }}" class='btn btn-info'>Ajouter une offre d'emploi</a>
