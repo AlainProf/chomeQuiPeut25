@@ -214,4 +214,42 @@ final class ChomeurController extends AbstractController
        return $tabOEFiltrees;
     }
 
+    
+    #[Route('/reqAvancee', name:'reqAvancee')]
+    public function reqAvancee(ManagerRegistry $doctrine, Request $req): Response
+    {
+        $entreprise = $doctrine->getManager()->getRepository(Entreprise::class)->findOneBy(['nom'=>'pepsi']);
+
+        $em = $doctrine->getmanager();
+
+        $query = $em->createQuery(
+            'select oe
+            from App\Entity\OffreEmploi oe
+            where oe.salaireAnnuel < 120000 and oe.entreprise = :entrep')
+            ->setParameter('entrep', $entreprise); 
+        $offres = $query->getResult();
+
+
+        return $this->render('resultat.html.twig', ['offres' => $offres]);
+    }
+
+    #[Route('/validerUnicite', name:'reqAvancee')]
+    public function validerUnicite(ManagerRegistry $doctrine, Request $request)
+    {
+        $reponse = "unique";
+        if ($request->isXmlHttpRequest())
+        {
+           $nomUtilisateur = $request->query->get('nomChomeur');
+           //die ("--$nomUtilisateur--");
+          $em = $doctrine->getManager();
+           $client = $em->getRepository(Chomeur::class)
+        ->findOneBy(['nom'=>$nomUtilisateur]);
+        if ($client)
+           $reponse="doublon";
+          return new Response($reponse);
+        }
+        die('Injection URL');
+    }
+    
+
 }

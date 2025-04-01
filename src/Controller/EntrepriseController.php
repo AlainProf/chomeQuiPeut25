@@ -11,7 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 
 use Doctrine\Persistence\ManagerRegistry;
-use App\Entity\OffreEmploi;
+use App\Entity\{OffreEmploi, Application};
 use App\Entity\Chomeur;
 use App\Entity\Adresse;
 use App\Entity\Entreprise;
@@ -150,5 +150,24 @@ final class EntrepriseController extends AbstractController
         return $this->render('creerOffreEmploi.html.twig', ['formulaire' => $formOE, 'nomEntrep' => $entrep->getNom()] );
      
     }
+
+    #[Route('/convoquer/{idApplic}', name:'convoquer')]
+    public function convoquer(ManagerRegistry $doctrine, Request $req, $idApplic): Response
+    {
+        $app = $doctrine->getManager()->getRepository(Application::class)->find($idApplic);
+        $app->setConvoque(true);
+        $doctrine->getManager()->flush();
+        return $this->redirectToRoute('accueilEntreprise');
+    }
+
+    #[Route('/annulerConv/{idApplic}', name:'annulerConv')]
+    public function annulerConv(ManagerRegistry $doctrine, Request $req, $idApplic): Response
+    {
+        $app = $doctrine->getManager()->getRepository(Application::class)->find($idApplic);
+        $app->setConvoque(false);
+        $doctrine->getManager()->flush();
+        return $this->redirectToRoute('accueilEntreprise');
+    }
+
 
 }

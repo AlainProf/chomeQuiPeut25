@@ -12,18 +12,41 @@
 
 <div class="row">
 	
-<section class="col-11">
+<section class="col-6">
+   <h2>Offres sans convocation</h2>
+       {% for oe in entrepriseConnectee.offreEmplois %}
+
+          {% if oe.applications|length > 0 %}
+  	       <ul>
+             {% for a in oe.Applications %}
+                {% if not a.convoque %}
+                 <li>
+                  <h5>{{oe.Titre}}, {{oe.salaIreAnnuel}}$</h5>
+                  {{a.chomeur.nom}} <a class="btn btn-success" href="{{path('convoquer', {'idApplic':a.id}) }}">Convoquer</a>
+                 </li>
+                {% endif %}
+             {% endfor %}
+          </ul>
+          {% endif %}
+          {% endfor %}
+        <a href="{{ path('rte_creer_offre_emploi') }}" class='btn btn-info'>Ajouter une offre d'emploi</a>
+</section>
+
+<section class="col-5">
+   <h2>Candidats convoques</h2>
   	<ul>
        {% for oe in entrepriseConnectee.offreEmplois %}
-       <li>{{oe.Titre}} , {{oe.salaireAnnuel}}$CAN
-       {% if oe.applications|length > 0 %}
-          {% for a in oe.applications %}
-             {{a.Chomeur.Nom }}
-          {% endfor %}
-          &nbsp; 
-       {% endif %}
-
-       </li>
+           {% if oe.applications|length > 0 %}
+              {% for a in oe.Applications %}
+                 {% if a.convoque %}
+                 <li>
+                  <h5>{{oe.Titre}}, {{a.chomeur.nom }}</h5>
+                   <a class="btn btn-warning" href="{{path('annulerConv', {'idApplic':a.id}) }}">Annuler</a>
+                 </li>
+                 {% endif %}
+              {% endfor %}
+           {% endif %}
+       
        {% endfor %}
     </ul>
     <a href="{{ path('rte_creer_offre_emploi') }}" class='btn btn-info'>Ajouter une offre d'emploi</a>

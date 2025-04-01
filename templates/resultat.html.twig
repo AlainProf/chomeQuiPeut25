@@ -1,0 +1,19 @@
+{%extends 'base.html.twig' %}
+{% block stylesheets %}
+	<link rel="stylesheet" href="/css/chomeQuiPeut.css">
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}
+
+{% block body %}
+
+{{ include('commun/zoneFlash.html.twig')}}
+
+<div class="row">
+   {% for o in offres %}
+     {{ o.titre }} : {{o.salaireAnnuel}}$<br>
+   {% endfor %}
+
+</div>
+{% endblock %}
