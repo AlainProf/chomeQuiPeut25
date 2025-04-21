@@ -4,7 +4,6 @@
 {% endblock %}
 
 {% block javascripts %}
-<script src="js/unicite.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -15,7 +14,7 @@
 {{ form_start(formulaire)}}
 <div>
    {{ form_label(formulaire.nom, 'Nom:')}}
-   {{ form_widget(formulaire.nom, {attr:{'onblur':'validerUnicite()'}} )}}
+   {{ form_widget(formulaire.nom)}}
    <section class='erreur'>
    {{ form_errors(formulaire.nom)}}
    </section>
