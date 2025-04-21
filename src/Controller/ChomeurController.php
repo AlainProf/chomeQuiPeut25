@@ -13,9 +13,6 @@ use App\Entity\Adresse;
 use App\Entity\{Entreprise, Application};
 
 use App\Form\ChomeurType;
-use App\Form\PhotoChomeurType;
-use App\Classe\PhotoChomeur;
-
 
 final class ChomeurController extends AbstractController
 {
@@ -48,41 +45,6 @@ final class ChomeurController extends AbstractController
         {
             $this->addFlash('succes', 'Bienvenue ' . $chomeurConnecte->getNom());
             $req->getSession()->set('chomeurConnecte', $chomeurConnecte);
-
-
-            $nomFichierImage =  __DIR__ . '/../../public/images/chomeur' . $chomeurConnecte->getId() . '.png';
-
-            //Si l’image du chomeur n’existe pas on met l’image par défaut
-            if (file_Exists($nomFichierImage))
-               $image = 'images/chomeur' . $chomeurConnecte->getId() . '.png';
-            else
-               $image = 'images/pasImage.png';
-
-            $photoChomeur = new PhotoChomeur;
-            $photoChomeur->setChomeurId($chomeurConnecte->getId());
-            // On créé le formulaire avec le PhotoChomeurType et on lui passe une
-            // instance de la classe PhotoChomeur
-            $formPhotoChomeur = $this->createForm(PhotoChomeurType::Class, $photoChomeur);
-            $formPhotoChomeur->handleRequest($req);
-            if ($formPhotoChomeur->isSubmitted())		
-            {
-              if ($formPhotoChomeur->isValid())
-              {
-                 $codeErreur = 0;
-                 if ($photoChomeur->televerse($codeErreur))
-                 {
-                    $this->addFlash('notice', 'image du chômeur téléversée avec 
-                                               succès!');
-                 }
-                 else
-                    $this->addFlash('erreur', "Erreur ($codeErreur) lors du 
-                                               téléversement de l'image");
-              }
-              else
-              {
-                     $this->addFlash('erreur', "Formulaire invalide ");
-              }
-           }
         }
 
 
@@ -103,9 +65,7 @@ final class ChomeurController extends AbstractController
         [
             'tabOE' => $offresEmploisNA,
             'chomeur' => $chomeurConnecte,
-            'tabEntrep' => $entreprises,
-            'image' => $image,
-            'formPhotoChomeur' => $formPhotoChomeur->createView() 
+            'tabEntrep' => $entreprises
         ]);
     }
 
