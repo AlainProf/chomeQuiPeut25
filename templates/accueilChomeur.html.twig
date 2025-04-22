@@ -15,7 +15,19 @@
     <!-- Section des offres emplois -->
 	<!-- ---------------------------------------- -->
   <section class="col-6">
+    <article>
+	  <img class="col-1" src='{{ asset(image) }}' alt='ficheir introuvable'>
+	  <h5>Modifier votre image</h5>
+	  {#{form(formImage)}#}
 
+	  {{ form_start(formImage)}}
+	    {{form_label(formImage.imageChomeur, "Photo max 50 Ko") }}
+		{{form_errors(formImage.imageChomeur)}}
+		   <input type='Hidden' value='50000' name='MAX_FILE_SIZE'>
+		{{form_widget(formImage.imageChomeur) }}   
+		{{form_rest(formImage) }}
+	  {{ form_end(formImage)}}
+	</article>
 
   	<ul>
         {% if entrepFiltree is defined %} 

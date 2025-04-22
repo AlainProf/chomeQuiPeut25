@@ -13,6 +13,8 @@ use App\Entity\Adresse;
 use App\Entity\{Entreprise, Application};
 
 use App\Form\ChomeurType;
+use App\Form\PhotoChomeurType;
+use App\Classe\PhotoChomeur;
 
 final class ChomeurController extends AbstractController
 {
@@ -41,12 +43,46 @@ final class ChomeurController extends AbstractController
                  ->getRepository(Chomeur::class)
                  ->find($idChomeur);
 
+        $nomFichierImage = __DIR__ . '/../../public/images/chomeur' . $idChomeur . '.png';
+
+        if (file_exists($nomFichierImage))
+        {
+            $image = 'images/chomeur' . $idChomeur . '.png';
+        }
+        else
+        {
+            $image = 'images/chomeurDefaut.png';
+        }
+
+        $photoChomeur = new PhotoChomeur;
+        $photoChomeur->setChomeurId($idChomeur);
+
+        $formPhotoChomeur = $this->createForm(PhotoChomeurType::class, $photoChomeur);
+
+        $formPhotoChomeur->handleRequest($req);
+        if ($formPhotoChomeur->isSubmitted())
+        {
+            if ($formPhotoChomeur->isValid())
+            {
+                $codeErr = 0;
+                if ($photoChomeur->televerse($codeErre))
+                {
+                    $this->addFlash('succes', 'image téléversée avec succès!!');
+                }
+                else
+                {
+                    
+                    $this->addFlash('erreur', "Erreur ($codeErr)lors du téléversement de l'image...");
+                }
+            }
+        }
+
+  
         if ($chomeurConnecte)
         {
             $this->addFlash('succes', 'Bienvenue ' . $chomeurConnecte->getNom());
             $req->getSession()->set('chomeurConnecte', $chomeurConnecte);
         }
-
 
   
         $offresEmplois = $doctrine->getManager()
@@ -65,7 +101,9 @@ final class ChomeurController extends AbstractController
         [
             'tabOE' => $offresEmploisNA,
             'chomeur' => $chomeurConnecte,
-            'tabEntrep' => $entreprises
+            'tabEntrep' => $entreprises,
+            'image' => $image,
+            'formImage' => $formPhotoChomeur
         ]);
     }
 
